@@ -29,10 +29,18 @@ func main() {
 	}
 
 	b := bytes.NewBuffer(nil)
+	mustHaveIndex := rand.Intn(len(letters))
+	var mustHave rune
+	var i int
 	for c := range letters {
-		b.WriteRune(c)
+		if i == mustHaveIndex {
+			mustHave = c
+		} else {
+			b.WriteRune(c)
+		}
+		i++
 	}
-	fmt.Println("Kirjaimet:", strings.ToUpper(b.String()))
+	fmt.Printf("Sallitut kirjaimet (ensimmäinen pitää esiintyä aina): %c %s\n", mustHave, b)
 
 	r := bufio.NewReader(os.Stdin)
 	var found []string
@@ -58,13 +66,21 @@ mainloop:
 			continue
 		}
 
+		has := false
 		set := make(map[rune]struct{})
 		for _, c := range s {
+			if c == mustHave {
+				has = true
+			}
 			if _, ok := letters[c]; !ok {
 				fmt.Printf("Kirjain ei kuulu joukkoon: %c\n", c)
 				continue mainloop
 			}
 			set[c] = struct{}{}
+		}
+		if !has {
+			fmt.Printf("Sana ei sisällä kirjainta %c\n", mustHave)
+			continue
 		}
 		if len(set) >= 7 {
 			fmt.Println("Sana sisältää kaikki kirjaimet!")
