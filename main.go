@@ -23,6 +23,11 @@ func main() {
 		words = words[:last]
 	}
 
+	wordSet := make(map[string]struct{}, len(words))
+	for _, w := range words {
+		wordSet[w] = struct{}{}
+	}
+
 	var letters map[rune]struct{}
 	for len(letters) != 7 {
 		letters = getLetterSet(words[rand.Intn(len(words))])
@@ -63,6 +68,11 @@ mainloop:
 
 		if utf8.RuneCountInString(s) < 4 {
 			fmt.Println("Sana on liian lyhyt")
+			continue
+		}
+
+		if _, ok := wordSet[s]; !ok {
+			fmt.Println("Tuntematon sana")
 			continue
 		}
 
