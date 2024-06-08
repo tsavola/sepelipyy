@@ -58,7 +58,7 @@ mainloop:
 	for len(found) < possible {
 		s, err := r.ReadString('\n')
 		if err != nil {
-			break
+			return
 		}
 
 		s = strings.TrimSpace(s[:len(s)-1])
