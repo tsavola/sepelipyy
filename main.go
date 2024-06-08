@@ -62,7 +62,7 @@ mainloop:
 		for _, f := range found {
 			if f == s {
 				fmt.Println("Sana on jo löytynyt")
-				continue
+				continue mainloop
 			}
 		}
 
