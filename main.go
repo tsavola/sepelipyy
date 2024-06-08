@@ -101,14 +101,6 @@ mainloop:
 	}
 }
 
-func getLetters(word string) []rune {
-	runes := make([]rune, len(word))
-	for _, c := range word {
-		runes = append(runes, c)
-	}
-	return runes
-}
-
 func getLetterSet(word string) map[rune]struct{} {
 	set := make(map[rune]struct{}, len(word))
 	for _, c := range word {
