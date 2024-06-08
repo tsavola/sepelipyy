@@ -23,11 +23,6 @@ func main() {
 		words = words[:last]
 	}
 
-	wordSet := make(map[string]struct{}, len(words))
-	for _, w := range words {
-		wordSet[w] = struct{}{}
-	}
-
 	var letters map[rune]struct{}
 	for len(letters) != 7 {
 		letters = getLetterSet(words[rand.Intn(len(words))])
@@ -47,11 +42,20 @@ func main() {
 	}
 	fmt.Printf("Sallitut kirjaimet (ensimmäinen pitää esiintyä aina): %c %s\n", mustHave, b)
 
+	wordSet := make(map[string]struct{}, len(words))
+	possible := 0
+	for _, w := range words {
+		wordSet[w] = struct{}{}
+		if isSubset(getLetterSet(w), letters) {
+			possible++
+		}
+	}
+
 	r := bufio.NewReader(os.Stdin)
 	var found []string
 
 mainloop:
-	for {
+	for len(found) < possible {
 		s, err := r.ReadString('\n')
 		if err != nil {
 			break
@@ -97,8 +101,10 @@ mainloop:
 		}
 
 		found = append([]string{s}, found...)
-		fmt.Println("Löytyneet sanat:", strings.Join(found, ", "))
+		fmt.Printf("Löytyneet sanat %d/%d: %s\n", len(found), possible, strings.Join(found, " "))
 	}
+
+	fmt.Println("Löysit kaikki sanat!")
 }
 
 func getLetterSet(word string) map[rune]struct{} {
@@ -107,4 +113,13 @@ func getLetterSet(word string) map[rune]struct{} {
 		set[c] = struct{}{}
 	}
 	return set
+}
+
+func isSubset(needle, haystack map[rune]struct{}) bool {
+	for key := range needle {
+		if _, found := haystack[key]; !found {
+			return false
+		}
+	}
+	return true
 }
